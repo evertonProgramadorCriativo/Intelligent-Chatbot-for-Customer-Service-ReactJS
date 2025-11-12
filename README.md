@@ -25,5 +25,35 @@ This code implements a React application that imports and tests configurations o
 ````
 
 
+**Sentiment Analysis Test**
+
+**Test 1: Positive Sentiment**
+Text: "Thank you! The product is excellent!"
+
+Result: Positive — Happy
+
+**Test 2: Negative Sentiment**
+Text: "Terrible service! Defective product!"
+
+Result: Negative — Sad
+
+**Test 3: Neutral Sentiment**
+Text: "What is the delivery time?"
+
+Result: Neutral — Neutral
+
+**Test 4: General Statistics**
+Positive: 2
+Negative: 1
+Neutral: 1
+Total: 4
+
+## Teste - API Configuration
+**Configurações da API:**
+**Endpoint:** https://api.anthropic.com/v1/messages
+
+**Model:** claude-sonnet-4-20250514
+
+**Max Tokens:** 1000
 
 ## Author : Everton Eduardo 
