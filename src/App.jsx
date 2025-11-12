@@ -1,33 +1,58 @@
-
-import { API_CONFIG } from './utils/constants';
+import ChatMessage from './components/ChatMessage';
 
 function App() {
-  // Simular getSystemPrompt localmente
-  const testPrompt = (category) => {
-    console.log(` TESTE - Prompt para categoria "${category}":`);
-    console.log('Endpoint:', API_CONFIG.endpoint);
-    console.log('Model:', API_CONFIG.model);
-    console.log('MaxTokens:', API_CONFIG.maxTokens);
-  };
-
-  testPrompt('produtos');
-  testPrompt('pedidos');
-  testPrompt('reclamacoes');
-  testPrompt('duvidas');
+  // Mensagens de teste
+  const testMessages = [
+    {
+      role: 'assistant',
+      content: 'Olá! Bem-vindo à Fashion Store! Como posso ajudá-lo?',
+      timestamp: new Date(),
+      isTransfer: false
+    },
+    {
+      role: 'user',
+      content: 'Olá! Gostaria de saber sobre os tamanhos disponíveis.',
+      timestamp: new Date(),
+      isTransfer: false
+    },
+    {
+      role: 'assistant',
+      content: 'Claro! Temos tamanhos de P a GG disponíveis. Qual peça você está procurando?',
+      timestamp: new Date(),
+      isTransfer: false
+    },
+    {
+      role: 'assistant',
+      content: 'Transferindo para atendimento humano...\n\nUm de nossos atendentes entrará em contato em breve.',
+      timestamp: new Date(),
+      isTransfer: true
+    }
+  ];
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h1> Teste - API Configuration</h1>
-      <div style={{ background: '#f0f0f0', padding: '15px', borderRadius: '8px', marginTop: '20px' }}>
-        <h2>Configurações da API:</h2>
-        <p><strong>Endpoint:</strong> {API_CONFIG.endpoint}</p>
-        <p><strong>Model:</strong> {API_CONFIG.model}</p>
-        <p><strong>Max Tokens:</strong> {API_CONFIG.maxTokens}</p>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 p-6">
+      <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-6">
+        <h1 className="text-2xl font-bold text-gray-800 mb-6">
+           Teste - ChatMessage Component
+        </h1>
+        
+        <div className="space-y-4">
+          {testMessages.map((msg, index) => (
+            <ChatMessage key={index} message={msg} />
+          ))}
+        </div>
+
+        <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+          <h3 className="font-semibold text-green-800 mb-2"> Teste Passou se:</h3>
+          <ul className="text-sm text-green-700 space-y-1">
+            <li>- Mensagens do assistente à esquerda (roxo/rosa)</li>
+            <li>- Mensagens do usuário à direita (azul)</li>
+            <li>- Mensagem de transferência em verde</li>
+            <li>- Ícones diferentes (Bot, User, Headphones)</li>
+            <li>- Horários exibidos abaixo de cada mensagem</li>
+          </ul>
+        </div>
       </div>
-      <p style={{ marginTop: '20px', color: '#666' }}>
-         Configuração carregada com sucesso!<br/>
-         Verifique o console para detalhes dos prompts
-      </p>
     </div>
   );
 }
