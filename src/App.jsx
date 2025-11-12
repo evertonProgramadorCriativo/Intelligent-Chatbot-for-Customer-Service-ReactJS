@@ -1,57 +1,56 @@
-import ChatMessage from './components/ChatMessage';
+import { useState } from 'react';
+import ChatInput from './components/ChatInput';
 
 function App() {
-  // Mensagens de teste
-  const testMessages = [
-    {
-      role: 'assistant',
-      content: 'Olá! Bem-vindo à Fashion Store! Como posso ajudá-lo?',
-      timestamp: new Date(),
-      isTransfer: false
-    },
-    {
-      role: 'user',
-      content: 'Olá! Gostaria de saber sobre os tamanhos disponíveis.',
-      timestamp: new Date(),
-      isTransfer: false
-    },
-    {
-      role: 'assistant',
-      content: 'Claro! Temos tamanhos de P a GG disponíveis. Qual peça você está procurando?',
-      timestamp: new Date(),
-      isTransfer: false
-    },
-    {
-      role: 'assistant',
-      content: 'Transferindo para atendimento humano...\n\nUm de nossos atendentes entrará em contato em breve.',
-      timestamp: new Date(),
-      isTransfer: true
-    }
-  ];
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [messages, setMessages] = useState([]);
+
+  const handleSend = () => {
+    if (!input.trim()) return;
+    
+    console.log(' Mensagem enviada:', input);
+    setMessages([...messages, { text: input, time: new Date().toLocaleTimeString() }]);
+    setInput('');
+    
+    // Simular loading
+    setLoading(true);
+    setTimeout(() => setLoading(false), 2000);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 p-6">
-      <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">
-           Teste - ChatMessage Component
-        </h1>
-        
-        <div className="space-y-4">
-          {testMessages.map((msg, index) => (
-            <ChatMessage key={index} message={msg} />
-          ))}
+      <div className="max-w-2xl mx-auto">
+        <div className="bg-white rounded-t-2xl shadow-lg p-6">
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">
+             Teste - ChatInput Component
+          </h1>
+          
+          <div className="bg-gray-50 rounded-lg p-4 mb-4 min-h-[200px]">
+            <h3 className="font-semibold mb-2">Mensagens Enviadas:</h3>
+            {messages.length === 0 ? (
+              <p className="text-gray-400 text-sm">Nenhuma mensagem ainda...</p>
+            ) : (
+              <ul className="space-y-2">
+                {messages.map((msg, i) => (
+                  <li key={i} className="text-sm bg-white p-2 rounded">
+                    <span className="font-medium">{msg.time}</span>: {msg.text}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          
         </div>
 
-        <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-          <h3 className="font-semibold text-green-800 mb-2"> Teste Passou se:</h3>
-          <ul className="text-sm text-green-700 space-y-1">
-            <li>- Mensagens do assistente à esquerda (roxo/rosa)</li>
-            <li>- Mensagens do usuário à direita (azul)</li>
-            <li>- Mensagem de transferência em verde</li>
-            <li>- Ícones diferentes (Bot, User, Headphones)</li>
-            <li>- Horários exibidos abaixo de cada mensagem</li>
-          </ul>
-        </div>
+        <ChatInput 
+          input={input}
+          setInput={setInput}
+          onSend={handleSend}
+          loading={loading}
+          transferRequested={false}
+        />
       </div>
     </div>
   );
