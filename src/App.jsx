@@ -1,82 +1,65 @@
 import { useState } from 'react';
+import Header from './components/Header';
 import AnalyticsPanel from './components/AnalyticsPanel';
 
 function App() {
-  const [stats, setStats] = useState({
-    positive: 5,
-    negative: 2,
+  const [showAnalytics, setShowAnalytics] = useState(false);
+  const [transferRequested, setTransferRequested] = useState(false);
+
+  const handleTransfer = () => {
+    console.log(' Transferindo para atendimento humano...');
+    setTransferRequested(true);
+  };
+
+  const mockStats = {
+    positive: 8,
+    negative: 1,
     neutral: 3,
-    total: 10
-  });
-
-  const addPositive = () => {
-    setStats(prev => ({
-      ...prev,
-      positive: prev.positive + 1,
-      total: prev.total + 1
-    }));
-  };
-
-  const addNegative = () => {
-    setStats(prev => ({
-      ...prev,
-      negative: prev.negative + 1,
-      total: prev.total + 1
-    }));
-  };
-
-  const addNeutral = () => {
-    setStats(prev => ({
-      ...prev,
-      neutral: prev.neutral + 1,
-      total: prev.total + 1
-    }));
-  };
-
-  const reset = () => {
-    setStats({ positive: 0, negative: 0, neutral: 0, total: 0 });
+    total: 12
   };
 
   return (
-    <div className=" min-h-screen w-full bg-gradient-to-br from-blue-200 via-blue-500 to-blue-200 p-6">
+    <div className="min-h-screen w-full bg-gradient-to-br from-blue-200 via-blue-500 to-blue-200 p-6">
       <div className="max-w-3xl mx-auto">
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-          <div className="p-6 bg-gradient-to-br from-blue-600 via-blue-500 to-blue-400">
-            <h1 className="text-2xl font-bold text-white">
-               Teste - AnalyticsPanel Component
-            </h1>
-          </div>
+        <Header 
+          showAnalytics={showAnalytics}
+          setShowAnalytics={setShowAnalytics}
+          transferRequested={transferRequested}
+          onTransfer={handleTransfer}
+        />
 
-          <AnalyticsPanel stats={stats} />
+        {showAnalytics && <AnalyticsPanel stats={mockStats} />}
 
-          <div className="p-6">
-            <h3 className="font-semibold mb-4">Controles de Teste:</h3>
-         <div className="flex flex-wrap justify-center mb-4" style={{ gap: '1rem' }}>
-              <button 
-                onClick={addPositive}
-                className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
-              >
-                 Positivo
-              </button>
-              <button 
-                onClick={addNegative}
-                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-              >
-                 Negativo
-              </button>
-              <button 
-                onClick={addNeutral}
-                className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
-              >
-                Neutro
-              </button>
-              <button 
-                onClick={reset}
-                className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors"
-              >
-                Reset
-              </button>
+        <div className="bg-white p-6 rounded-b-2xl shadow-lg">
+          <h2 className="text-xl font-bold mb-4"> Teste - Header Component</h2>
+          
+          <div className="space-y-4">
+            <div className="p-4 bg-gray-50 rounded-lg">
+              <h3 className="font-semibold mb-2">Status Atual:</h3>
+              <p>Analytics: <span className={showAnalytics ? 'text-green-600 font-semibold' : 
+                'text-gray-400'}>
+                {showAnalytics ? 'VISÍVEL ' : 'OCULTO'}
+              </span></p>
+              <p>Transfer: <span className={transferRequested ? 'text-green-600 font-semibold' : 'text-gray-400'}>
+                {transferRequested ? 'SOLICITADO ' : 'NÃO SOLICITADO'}
+              </span></p>
             </div>
+
+            {transferRequested && (
+              <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-green-700">
+                   Botão de transferência desapareceu corretamente!
+                </p>
+                <button 
+                  onClick={() => setTransferRequested(false)}
+                  className="mt-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                >
+                  Resetar Teste
+                </button>
+              </div>
+            )}
+
+           
           </div>
         </div>
       </div>
