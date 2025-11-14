@@ -1,70 +1,145 @@
-import { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Loader2, Bot } from 'lucide-react';
+
+// Components
 import Header from './components/Header';
 import AnalyticsPanel from './components/AnalyticsPanel';
+import CategoryMenu from './components/CategoryMenu';
+import ChatMessage from './components/ChatMessage';
+import ChatInput from './components/ChatInput';
 
-function App() {
+// Services
+import { calculateStats } from './services/sentimentAnalysis';
+
+export default function App() {
+  // Estados principais
+  const [messages, setMessages] = useState([
+    {
+      role: 'assistant',
+      content: 'Olá! Bem-vindo à nossa loja! \n\nSou o assistente virtual e estou aqui para ajudá-lo. Como posso te auxiliar hoje?',
+      timestamp: new Date(),
+      sentiment: 'neutral'
+    }
+  ]);
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
   const [showAnalytics, setShowAnalytics] = useState(false);
+  const [showMenu, setShowMenu] = useState(true);
+  const [currentCategory, setCurrentCategory] = useState(null);
   const [transferRequested, setTransferRequested] = useState(false);
+  const messagesEndRef = useRef(null);
 
-  const handleTransfer = () => {
+  // Scroll automático
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  // Função temporária para testar
+  const handleCategorySelect = (category) => {
+    console.log(' Categoria selecionada:', category.id);
+    setCurrentCategory(category.id);
+    setShowMenu(false);
+    
+    const categoryMessage = {
+      role: 'assistant',
+      content: `Você selecionou: **${category.title}**\n\n${category.description}\n\nPor favor, descreva sua questão e farei o possível para ajudá-lo!`,
+      timestamp: new Date(),
+      sentiment: 'neutral'
+    };
+    
+    setMessages(prev => [...prev, categoryMessage]);
+  };
+
+  const handleTransferToHuman = () => {
     console.log(' Transferindo para atendimento humano...');
     setTransferRequested(true);
+    const transferMessage = {
+      role: 'assistant',
+      content: ' **Transferindo para atendimento humano...**\n\nUm de nossos atendentes especializados entrará em contato com você em instantes.\n\n**Informações do atendimento:**\n- Categoria: ' + (currentCategory || 'Não especificada') + '\n- Tempo estimado: 2-3 minutos\n- Posição na fila: 1º\n\nPor favor, aguarde um momento.',
+      timestamp: new Date(),
+      sentiment: 'neutral',
+      isTransfer: true
+    };
+    
+    setMessages(prev => [...prev, transferMessage]);
   };
 
-  const mockStats = {
-    positive: 8,
-    negative: 1,
-    neutral: 3,
-    total: 12
+  // Função temporária de envio (SEM API ainda)
+  const handleSendMessage = () => {
+    if (!input.trim() || loading) return;
+
+    console.log(' Enviando:', input);
+
+    const userMessage = {
+      role: 'user',
+      content: input,
+      timestamp: new Date(),
+      sentiment: 'neutral'
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setInput('');
+    
+    // Simular resposta
+    setLoading(true);
+    setTimeout(() => {
+      const botReply = {
+        role: 'assistant',
+        content: 'Esta é uma resposta de teste. A integração com a API será feita na próxima fase!',
+        timestamp: new Date(),
+        sentiment: 'neutral'
+      };
+      setMessages(prev => [...prev, botReply]);
+      setLoading(false);
+    }, 1500);
   };
+
+  const stats = calculateStats(messages);
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-blue-200 via-blue-500 to-blue-200 p-6">
-      <div className="max-w-3xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-blue-200 via-blue-500 to-blue-200 p-2 sm:p-4 md:p-6">
+      <div className="max-w-4xl mx-auto w-full">
         <Header 
           showAnalytics={showAnalytics}
           setShowAnalytics={setShowAnalytics}
           transferRequested={transferRequested}
-          onTransfer={handleTransfer}
+          onTransfer={handleTransferToHuman}
         />
 
-        {showAnalytics && <AnalyticsPanel stats={mockStats} />}
+        {showAnalytics && <AnalyticsPanel stats={stats} />}
 
-        <div className="bg-white p-6 rounded-b-2xl shadow-lg">
-          <h2 className="text-xl font-bold mb-4"> Teste - Header Component</h2>
+        <div className="bg-white h-[400px] sm:h-[500px] md:h-[550px] overflow-y-auto p-3 sm:p-4 md:p-6 space-y-3 sm:space-y-4">
+          {showMenu && <CategoryMenu onSelectCategory={handleCategorySelect} />}
+
+          {messages.map((message, index) => (
+            <ChatMessage key={index} message={message} />
+          ))}
           
-          <div className="space-y-4">
-            <div className="p-4 bg-gray-50 rounded-lg">
-              <h3 className="font-semibold mb-2">Status Atual:</h3>
-              <p>Analytics: <span className={showAnalytics ? 'text-green-600 font-semibold' : 
-                'text-gray-400'}>
-                {showAnalytics ? 'VISÍVEL ' : 'OCULTO'}
-              </span></p>
-              <p>Transfer: <span className={transferRequested ? 'text-green-600 font-semibold' : 'text-gray-400'}>
-                {transferRequested ? 'SOLICITADO ' : 'NÃO SOLICITADO'}
-              </span></p>
-            </div>
-
-            {transferRequested && (
-              <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                <p className="text-green-700">
-                   Botão de transferência desapareceu corretamente!
-                </p>
-                <button 
-                  onClick={() => setTransferRequested(false)}
-                  className="mt-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-                >
-                  Resetar Teste
-                </button>
+          {loading && (
+            <div className="flex gap-2 sm:gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
-            )}
-
-           
-          </div>
+              <div className="bg-gray-100 rounded-2xl px-3 py-2 sm:px-4 sm:py-3">
+                <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 animate-spin" />
+              </div>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
         </div>
+
+        <ChatInput 
+          input={input}
+          setInput={setInput}
+          onSend={handleSendMessage}
+          loading={loading}
+          transferRequested={transferRequested}
+        />
       </div>
     </div>
   );
 }
-
-export default App;
