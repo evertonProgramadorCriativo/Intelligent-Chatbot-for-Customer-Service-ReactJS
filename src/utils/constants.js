@@ -38,8 +38,3 @@ export const COLOR_CLASSES = {
   purple: 'from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700'
 };
 
-export const API_CONFIG = {
-  endpoint: 'https://api.anthropic.com/v1/messages',
-  model: 'claude-sonnet-4-20250514',
-  maxTokens: 1000
-};

@@ -81,36 +81,52 @@ export default function App() {
  * //  Enviando: "Mensagem do usuário"
  * //  Sentimento detectado: "positive"
  */
- const handleSendMessage = () => {
+const handleSendMessage = async () => {
   if (!input.trim() || loading) return;
 
-  console.log(' Enviando:', input);
-
-  
   const userMessage = {
     role: 'user',
     content: input,
     timestamp: new Date(),
-    sentiment: analyzeSentiment(input) 
+    sentiment: analyzeSentiment(input)
   };
 
-  console.log(' Sentimento detectado:', userMessage.sentiment);
-
   setMessages(prev => [...prev, userMessage]);
+  const userInput = input;
   setInput('');
-  
-  // Simular resposta
   setLoading(true);
-  setTimeout(() => {
-    const botReply = {
+
+  try {
+    console.log('🤖 Enviando para API Claude...');
+    
+    // Chamar API real
+    const aiResponse = await sendMessageToAI(
+      [...messages, userMessage], 
+      currentCategory
+    );
+
+    console.log('✅ Resposta recebida:', aiResponse.substring(0, 50) + '...');
+
+    const assistantMsg = {
       role: 'assistant',
-      content: 'Entendi sua mensagem! Na próxima fase vou responder usando IA real.',
+      content: aiResponse,
+      timestamp: new Date(),
+      sentiment: analyzeSentiment(aiResponse)
+    };
+
+    setMessages(prev => [...prev, assistantMsg]);
+  } catch (error) {
+    console.error('❌ Erro ao enviar mensagem:', error);
+    setMessages(prev => [...prev, {
+      role: 'assistant',
+      content: 'Desculpe, ocorreu um erro. Vou transferir você para um atendente humano.',
       timestamp: new Date(),
       sentiment: 'neutral'
-    };
-    setMessages(prev => [...prev, botReply]);
+    }]);
+    setTimeout(handleTransferToHuman, 1000);
+  } finally {
     setLoading(false);
-  }, 1500);
+  }
 };
   const stats = calculateStats(messages);
 

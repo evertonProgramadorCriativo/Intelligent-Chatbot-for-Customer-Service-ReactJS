@@ -48,12 +48,26 @@ Negative: 1
 Neutral: 1
 Total: 4
 
-## Teste - API Configuration
-**Configurações da API:**
-**Endpoint:** https://api.anthropic.com/v1/messages
+**Teste 1: Categoria Produtos**
 
-**Model:** claude-sonnet-4-20250514
+Selecione **"Produtos e Roupas"**
+**Digite: "Quais tamanhos vocês têm?"**
+Aguarde resposta da IA
 
-**Max Tokens:** 1000
+**Teste 2: Categoria Reclamações**
+
+Selecione **"Reclamações"**
+**Digite: "Meu produto chegou com defeito"**
+A IA deve oferecer transferência
+
+**Teste 3: Análise de Sentimento**
+
+Digite frases positivas e negativas
+Veja o Analytics atualizar
+
+Teste 4: **Transferência Manual**
+
+**Clique em "Falar com Humano"**
+Input deve desabilitar
 
 ## Author : Everton Eduardo 
