@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Loader2, Bot } from 'lucide-react';
-
+import { sendMessageToAI } from './services/apiService';
+import { analyzeSentiment, calculateStats } from './services/sentimentAnalysis';
 // Components
 import Header from './components/Header';
 import AnalyticsPanel from './components/AnalyticsPanel';
@@ -8,8 +9,7 @@ import CategoryMenu from './components/CategoryMenu';
 import ChatMessage from './components/ChatMessage';
 import ChatInput from './components/ChatInput';
 
-// Services
-import { calculateStats } from './services/sentimentAnalysis';
+
 
 export default function App() {
   // Estados principais
@@ -68,36 +68,50 @@ export default function App() {
     setMessages(prev => [...prev, transferMessage]);
   };
 
-  // Função temporária de envio (SEM API ainda)
-  const handleSendMessage = () => {
-    if (!input.trim() || loading) return;
+  /**
+ * Função para envio de mensagens com análise de sentimento em tempo real
+ * - Valida entrada vazia e estado de loading
+ * - Analisa sentimento do texto usando analyzeSentiment()
+ * - Adiciona mensagem do usuário com metadata completo
+ * - Simula resposta do assistente após 1.5s
+ * - Atualiza estado de loading durante o processamento
+ * 
+ * Exemplo de uso:
+ * // Console exibe:
+ * //  Enviando: "Mensagem do usuário"
+ * //  Sentimento detectado: "positive"
+ */
+ const handleSendMessage = () => {
+  if (!input.trim() || loading) return;
 
-    console.log(' Enviando:', input);
+  console.log(' Enviando:', input);
 
-    const userMessage = {
-      role: 'user',
-      content: input,
+  
+  const userMessage = {
+    role: 'user',
+    content: input,
+    timestamp: new Date(),
+    sentiment: analyzeSentiment(input) 
+  };
+
+  console.log(' Sentimento detectado:', userMessage.sentiment);
+
+  setMessages(prev => [...prev, userMessage]);
+  setInput('');
+  
+  // Simular resposta
+  setLoading(true);
+  setTimeout(() => {
+    const botReply = {
+      role: 'assistant',
+      content: 'Entendi sua mensagem! Na próxima fase vou responder usando IA real.',
       timestamp: new Date(),
       sentiment: 'neutral'
     };
-
-    setMessages(prev => [...prev, userMessage]);
-    setInput('');
-    
-    // Simular resposta
-    setLoading(true);
-    setTimeout(() => {
-      const botReply = {
-        role: 'assistant',
-        content: 'Esta é uma resposta de teste. A integração com a API será feita na próxima fase!',
-        timestamp: new Date(),
-        sentiment: 'neutral'
-      };
-      setMessages(prev => [...prev, botReply]);
-      setLoading(false);
-    }, 1500);
-  };
-
+    setMessages(prev => [...prev, botReply]);
+    setLoading(false);
+  }, 1500);
+};
   const stats = calculateStats(messages);
 
   return (
