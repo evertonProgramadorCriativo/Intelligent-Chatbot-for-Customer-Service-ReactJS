@@ -98,7 +98,7 @@ const handleSendMessage = async () => {
   setLoading(true);
 
   try {
-    console.log('🤖 Enviando para API Claude...');
+    console.log(' Enviando para API Claude...');
     
     // Chamar API real
     const aiResponse = await sendMessageToAI(
@@ -106,7 +106,7 @@ const handleSendMessage = async () => {
       currentCategory
     );
 
-    console.log('✅ Resposta recebida:', aiResponse.substring(0, 50) + '...');
+    console.log(' Resposta recebida:', aiResponse.substring(0, 50) + '...');
 
     const assistantMsg = {
       role: 'assistant',
@@ -117,7 +117,7 @@ const handleSendMessage = async () => {
 
     setMessages(prev => [...prev, assistantMsg]);
   } catch (error) {
-    console.error('❌ Erro ao enviar mensagem:', error);
+    console.error(' Erro ao enviar mensagem:', error);
     setMessages(prev => [...prev, {
       role: 'assistant',
       content: 'Desculpe, ocorreu um erro. Vou transferir você para um atendente humano.',
@@ -132,7 +132,8 @@ const handleSendMessage = async () => {
   const stats = calculateStats(messages);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-200 via-blue-500 to-blue-200 p-2 sm:p-4 md:p-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-200
+     via-blue-500 to-blue-200 p-2 sm:p-4 md:p-6">
       <div className="max-w-4xl mx-auto w-full">
         <Header 
           showAnalytics={showAnalytics}
@@ -152,7 +153,7 @@ const handleSendMessage = async () => {
           
           {loading && (
             <div className="flex gap-2 sm:gap-3">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-green-500 to-pink-300 flex items-center justify-center">
                 <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
               <div className="bg-gray-100 rounded-2xl px-3 py-2 sm:px-4 sm:py-3">
