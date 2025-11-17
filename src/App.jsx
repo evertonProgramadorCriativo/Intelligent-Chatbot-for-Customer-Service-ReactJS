@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Loader2, Bot } from 'lucide-react';
 import { sendMessageToAI } from './services/apiService';
 import { analyzeSentiment, calculateStats } from './services/sentimentAnalysis';
+
 // Components
 import Header from './components/Header';
 import AnalyticsPanel from './components/AnalyticsPanel';
