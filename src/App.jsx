@@ -9,7 +9,7 @@ import AnalyticsPanel from './components/AnalyticsPanel';
 import CategoryMenu from './components/CategoryMenu';
 import ChatMessage from './components/ChatMessage';
 import ChatInput from './components/ChatInput';
-
+import TestAuthService from './components/TestAuthService';
 
 
 export default function App() {
@@ -135,6 +135,8 @@ const handleSendMessage = async () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-200
      via-blue-500 to-blue-200 p-2 sm:p-4 md:p-6">
       <div className="max-w-4xl mx-auto w-full">
+
+        <TestAuthService />
         <Header 
           showAnalytics={showAnalytics}
           setShowAnalytics={setShowAnalytics}
