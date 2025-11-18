@@ -10,7 +10,7 @@ import TestAuthContext from './components/TestAuthContext';
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AuthProvider>
-      <TestAuthContext />
+      {/*<TestAuthContext /> */}
       <App />
     </AuthProvider>
   </StrictMode>

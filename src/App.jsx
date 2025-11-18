@@ -10,7 +10,7 @@ import CategoryMenu from './components/CategoryMenu';
 import ChatMessage from './components/ChatMessage';
 import ChatInput from './components/ChatInput';
 import TestAuthService from './components/TestAuthService';
-
+import TestAuthForms from './components/TestAuthForms';
 
 export default function App() {
   // Estados principais
@@ -136,7 +136,8 @@ const handleSendMessage = async () => {
      via-blue-500 to-blue-200 p-2 sm:p-4 md:p-6">
       <div className="max-w-4xl mx-auto w-full">
 
-        <TestAuthService />
+        {/*<TestAuthService />*/}
+        <TestAuthForms />
         <Header 
           showAnalytics={showAnalytics}
           setShowAnalytics={setShowAnalytics}
