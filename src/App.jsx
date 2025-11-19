@@ -1,180 +1,107 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Loader2, Bot } from 'lucide-react';
-import { sendMessageToAI } from './services/apiService';
-import { analyzeSentiment, calculateStats } from './services/sentimentAnalysis';
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
+import PublicRoute from './components/PublicRoute';
 
-// Components
-import Header from './components/Header';
-import AnalyticsPanel from './components/AnalyticsPanel';
-import CategoryMenu from './components/CategoryMenu';
-import ChatMessage from './components/ChatMessage';
-import ChatInput from './components/ChatInput';
-import TestAuthService from './components/TestAuthService';
-import TestAuthForms from './components/TestAuthForms';
+// Páginas
+import Login from './pages/Login';
+import Register from './pages/Register';
+import UserDashboard from './pages/UserDashboard';
+import EmployeeDashboard from './pages/EmployeeDashboard';
+
+/**
+ * APP COM REACT ROUTER
+ * Estrutura de rotas da aplicação
+ */
 
 export default function App() {
-  // Estados principais
-  const [messages, setMessages] = useState([
-    {
-      role: 'assistant',
-      content: 'Olá! Bem-vindo à nossa loja! \n\nSou o assistente virtual e estou aqui para ajudá-lo. Como posso te auxiliar hoje?',
-      timestamp: new Date(),
-      sentiment: 'neutral'
-    }
-  ]);
-  const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [showAnalytics, setShowAnalytics] = useState(false);
-  const [showMenu, setShowMenu] = useState(true);
-  const [currentCategory, setCurrentCategory] = useState(null);
-  const [transferRequested, setTransferRequested] = useState(false);
-  const messagesEndRef = useRef(null);
-
-  // Scroll automático
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  // Função temporária para testar
-  const handleCategorySelect = (category) => {
-    console.log(' Categoria selecionada:', category.id);
-    setCurrentCategory(category.id);
-    setShowMenu(false);
-    
-    const categoryMessage = {
-      role: 'assistant',
-      content: `Você selecionou: **${category.title}**\n\n${category.description}\n\nPor favor, descreva sua questão e farei o possível para ajudá-lo!`,
-      timestamp: new Date(),
-      sentiment: 'neutral'
-    };
-    
-    setMessages(prev => [...prev, categoryMessage]);
-  };
-
-  const handleTransferToHuman = () => {
-    console.log(' Transferindo para atendimento humano...');
-    setTransferRequested(true);
-    const transferMessage = {
-      role: 'assistant',
-      content: ' **Transferindo para atendimento humano...**\n\nUm de nossos atendentes especializados entrará em contato com você em instantes.\n\n**Informações do atendimento:**\n- Categoria: ' + (currentCategory || 'Não especificada') + '\n- Tempo estimado: 2-3 minutos\n- Posição na fila: 1º\n\nPor favor, aguarde um momento.',
-      timestamp: new Date(),
-      sentiment: 'neutral',
-      isTransfer: true
-    };
-    
-    setMessages(prev => [...prev, transferMessage]);
-  };
-
-  /**
- * Função para envio de mensagens com análise de sentimento em tempo real
- * - Valida entrada vazia e estado de loading
- * - Analisa sentimento do texto usando analyzeSentiment()
- * - Adiciona mensagem do usuário com metadata completo
- * - Simula resposta do assistente após 1.5s
- * - Atualiza estado de loading durante o processamento
- * 
- * Exemplo de uso:
- * // Console exibe:
- * //  Enviando: "Mensagem do usuário"
- * //  Sentimento detectado: "positive"
- */
-const handleSendMessage = async () => {
-  if (!input.trim() || loading) return;
-
-  const userMessage = {
-    role: 'user',
-    content: input,
-    timestamp: new Date(),
-    sentiment: analyzeSentiment(input)
-  };
-
-  setMessages(prev => [...prev, userMessage]);
-  const userInput = input;
-  setInput('');
-  setLoading(true);
-
-  try {
-    console.log(' Enviando para API Claude...');
-    
-    // Chamar API real
-    const aiResponse = await sendMessageToAI(
-      [...messages, userMessage], 
-      currentCategory
-    );
-
-    console.log(' Resposta recebida:', aiResponse.substring(0, 50) + '...');
-
-    const assistantMsg = {
-      role: 'assistant',
-      content: aiResponse,
-      timestamp: new Date(),
-      sentiment: analyzeSentiment(aiResponse)
-    };
-
-    setMessages(prev => [...prev, assistantMsg]);
-  } catch (error) {
-    console.error(' Erro ao enviar mensagem:', error);
-    setMessages(prev => [...prev, {
-      role: 'assistant',
-      content: 'Desculpe, ocorreu um erro. Vou transferir você para um atendente humano.',
-      timestamp: new Date(),
-      sentiment: 'neutral'
-    }]);
-    setTimeout(handleTransferToHuman, 1000);
-  } finally {
-    setLoading(false);
-  }
-};
-  const stats = calculateStats(messages);
+  console.log('🚀 App: Inicializando com React Router...');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-200
-     via-blue-500 to-blue-200 p-2 sm:p-4 md:p-6">
-      <div className="max-w-4xl mx-auto w-full">
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+           
+          {/* ROTA RAIZ: Redireciona para login */}
+           
+          <Route 
+            path="/" 
+            element={<Navigate to="/login" replace />} 
+          />
 
-        {/*<TestAuthService />*/}
-        <TestAuthForms />
-        <Header 
-          showAnalytics={showAnalytics}
-          setShowAnalytics={setShowAnalytics}
-          transferRequested={transferRequested}
-          onTransfer={handleTransferToHuman}
-        />
+           
+          {/* ROTAS PÚBLICAS (Login e Registro) */}
+           
+          <Route
+            path="/login"
+            element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            }
+          />
 
-        {showAnalytics && <AnalyticsPanel stats={stats} />}
+          <Route
+            path="/register"
+            element={
+              <PublicRoute>
+                <Register />
+              </PublicRoute>
+            }
+          />
 
-        <div className="bg-white h-[400px] sm:h-[500px] md:h-[550px] overflow-y-auto p-3 sm:p-4 md:p-6 space-y-3 sm:space-y-4">
-          {showMenu && <CategoryMenu onSelectCategory={handleCategorySelect} />}
+           
+          {/* ROTA PROTEGIDA: Dashboard do Cliente */}
+           
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute requiredType="customer">
+                <UserDashboard />
+              </ProtectedRoute>
+            }
+          />
 
-          {messages.map((message, index) => (
-            <ChatMessage key={index} message={message} />
-          ))}
-          
-          {loading && (
-            <div className="flex gap-2 sm:gap-3">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-green-500 to-pink-300 flex items-center justify-center">
-                <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+           
+          {/* ROTA PROTEGIDA: Dashboard do Funcionário */}
+           
+          <Route
+            path="/employee-dashboard"
+            element={
+              <ProtectedRoute requiredType="employee">
+                <EmployeeDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+           
+          {/* ROTA 404: Página não encontrada */}
+           
+          <Route
+            path="*"
+            element={
+              <div className="min-h-screen bg-gradient-to-br from-red-500 to-pink-600 flex items-center justify-center p-6">
+                <div className="bg-white rounded-xl shadow-2xl p-8 max-w-md w-full text-center">
+                  <h1 className="text-6xl font-bold text-red-500 mb-4">404</h1>
+                  <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                    Página não encontrada
+                  </h2>
+                  <p className="text-gray-600 mb-6">
+                    A página que você está procurando não existe.
+                  </p>
+                  <a
+                    href="/login"
+                    className="inline-block bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-3 px-6 rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all"
+                  >
+                    Voltar para Login
+                  </a>
+                </div>
               </div>
-              <div className="bg-gray-100 rounded-2xl px-3 py-2 sm:px-4 sm:py-3">
-                <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 animate-spin" />
-              </div>
-            </div>
-          )}
-          <div ref={messagesEndRef} />
-        </div>
-
-        <ChatInput 
-          input={input}
-          setInput={setInput}
-          onSend={handleSendMessage}
-          loading={loading}
-          transferRequested={transferRequested}
-        />
-      </div>
-    </div>
+            }
+          />
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
