@@ -3,12 +3,17 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import PublicRoute from './components/PublicRoute';
-import TestAttendanceHelper from './components/tests/TestAttendanceHelper';
+
 // Páginas
 import Login from './pages/Login';
 import Register from './pages/Register';
 import UserDashboard from './pages/UserDashboard';
 import EmployeeDashboard from './pages/EmployeeDashboard';
+import TestAttendanceHelper from './components/tests/TestAttendanceHelper';
+import TestEmployeeFlow from './components/tests/TestEmployeeFlow';
+
+
+
 
 /**
  * APP COM REACT ROUTER
@@ -22,9 +27,12 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
+          {/*Adicione na área de rotas:*/}
+        <Route path="/test-flow" element={<TestEmployeeFlow />} />
+          
           {/* ROTA DE TESTE: Helper para testes de presença */}
           <Route path="/test-attendance" element={<TestAttendanceHelper />} />
-          
+
           {/* ROTA RAIZ: Redireciona para login */}
            
           <Route 
