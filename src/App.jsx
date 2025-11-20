@@ -16,7 +16,7 @@ import EmployeeDashboard from './pages/EmployeeDashboard';
  */
 
 export default function App() {
-  console.log('🚀 App: Inicializando com React Router...');
+  console.log(' App: Inicializando com React Router...');
 
   return (
     <BrowserRouter>
