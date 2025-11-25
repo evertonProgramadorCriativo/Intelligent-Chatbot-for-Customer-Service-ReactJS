@@ -204,17 +204,7 @@ export default function TestAuthContext() {
           </div>
         )}
 
-        {/* Instruções de Debug */}
-        <div className="bg-gray-900 text-green-400 rounded-xl shadow-lg p-6 font-mono text-sm">
-          <h3 className="text-lg font-bold mb-3"> Debug Console</h3>
-          <div className="space-y-1">
-            <p>→ Abra o DevTools (F12)</p>
-            <p>→ Vá na aba Console</p>
-            <p>→ Veja os logs detalhados de cada ação</p>
-            <p>→ Vá em Application &gt; Local Storage</p>
-            <p>→ Veja os dados sendo salvos/removidos</p>
-          </div>
-        </div>
+       
       </div>
     </div>
   );

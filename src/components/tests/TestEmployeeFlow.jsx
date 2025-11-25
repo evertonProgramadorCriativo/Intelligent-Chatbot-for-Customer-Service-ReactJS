@@ -430,18 +430,7 @@ export default function TestEmployeeFlow() {
           )}
         </div>
 
-        {/* Instruções */}
-        <div className="mt-6 bg-gray-900 text-green-400 rounded-xl p-6 font-mono text-sm">
-          <h3 className="text-lg font-bold mb-3">Como funciona:</h3>
-          <div className="space-y-2">
-            <p>1. Clique em "Executar Tudo" para simular fluxo completo</p>
-            <p>2. Ou clique em cada Step individual para testar separadamente</p>
-            <p>3. Depois, clique em "Ir para Dashboard" para ver o resultado</p>
-            <p>4. Faça login como funcionário (ana@fashionstore.com / 123456)</p>
-            <p>5. Você verá o atendimento criado na fila</p>
-            <p>6. Use "Limpar" para resetar e testar novamente</p>
-          </div>
-        </div>
+      
       </div>
     </div>
   );
